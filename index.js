@@ -16,6 +16,7 @@ const getTimestamp = (jobs) => {
 };
 
 const cookieJar = new CookieJar();
+const homePage = 'https://www.deepl.com/translator';
 const req = async (data) => {
     const resp = await got('https://www2.deepl.com/jsonrpc', {
         method: 'POST',
@@ -24,7 +25,7 @@ const req = async (data) => {
         body: JSON.stringify(data).replace('"method":', '"method": '),
         headers: {
             'Content-Type': 'text/plain',
-            'referer': 'https://www.deepl.com/translator',
+            'referer': homePage,
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36'
         }
     });
@@ -34,6 +35,10 @@ const req = async (data) => {
 
 module.exports = async (text = '', source = 'EN', target = 'ZH') => {
     let id = getId();
+
+    await got(homePage, {
+        cookieJar
+    });
 
     let resp = await req({
         "jsonrpc": "2.0",
